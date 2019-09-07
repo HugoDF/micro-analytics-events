@@ -14,7 +14,10 @@
   "xo": {
     "prettier": true,
     "space": true,
-    "globals": []
+    "globals": [],
+    "rules": {
+      "camelcase": 0
+    }
   },
   "license": "MIT",
   "dependencies": {

@@ -1,4 +1,4 @@
-const micro = require('micro')
+const micro = require('micro');
 const handler = require('./handler');
 
 const port = process.env.PORT || 3000;
