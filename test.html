@@ -1,0 +1,31 @@
+<pre id="render">
+</pre>
+<button id="send">Send a click event</button>
+<button id="load">Load data for today</button>
+<script>
+  function send(event_type) {
+    return fetch('http://localhost:3000', {
+      method: 'POST',
+      headers: new Headers({
+        Authorization: 'foo',
+      }),
+      body: JSON.stringify({ event_type })
+    })
+  }
+  send('page_loaded');
+  const $render = document.getElementById('render');
+  document.getElementById('send').addEventListener('click', e => {
+    e.preventDefault();
+    send('button_clicked');
+  });
+  document.getElementById('load').addEventListener('click', e => {
+    e.preventDefault();
+    fetch('http://localhost:3000').then(res => {
+      if(res.ok) {
+        return res.json();
+      }
+    }).then((data) => {
+      $render.innerText = JSON.stringify(data, null, 2);
+    });
+  });
+</script>
