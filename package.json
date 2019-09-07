@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "micro-dev handler.js",
+    "prestart": "node setup.js",
     "start": "node index.js",
     "lint": "xo .",
     "format": "xo . --fix"
