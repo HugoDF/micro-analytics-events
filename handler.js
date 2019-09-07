@@ -47,7 +47,7 @@ const handleGet = async req => {
   return {events};
 };
 
-const handlePost = async (req) => {
+const handlePost = async req => {
   try {
     const data = await json(req);
     const eventType = data.event_type;
@@ -62,15 +62,25 @@ const handlePost = async (req) => {
   }
 };
 
-module.exports = cors(
-  checkAuth(async (req, res) => {
-    switch (req.method) {
-      case 'GET':
-        return handleGet(req, res);
-      case 'POST':
-        return handlePost(req, res);
-      default:
-        return sendError(req, res, createError(501, 'Not Implemented'));
-    }
-  })
+const health = fn => (req, res) => {
+  if (req.url === '/health') {
+    return 'OK';
+  }
+
+  return fn(req, res);
+};
+
+module.exports = health(
+  cors(
+    checkAuth(async (req, res) => {
+      switch (req.method) {
+        case 'GET':
+          return handleGet(req, res);
+        case 'POST':
+          return handlePost(req, res);
+        default:
+          return sendError(req, res, createError(501, 'Not Implemented'));
+      }
+    })
+  )
 );
