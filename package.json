@@ -5,7 +5,8 @@
     "prestart": "node setup.js",
     "start": "node index.js",
     "lint": "xo .",
-    "format": "xo . --fix"
+    "format": "xo . --fix",
+    "reset": "rm .data/main.db && node setup.js"
   },
   "devDependencies": {
     "micro-dev": "^3.0.0",
