@@ -5,9 +5,4 @@ const tables = `CREATE TABLE IF NOT EXISTS events
   date STRING NOT NULL,
   event_type STRING NOT NULL);
 `;
-db.serialize(() => {
-  db.run(tables);
-  db.run(`
-    CREATE INDEX IF NOT EXISTS events_date ON events (datetime(date));
-  `);
-});
+db.run(tables);
