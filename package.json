@@ -1,6 +1,8 @@
 {
   "private": true,
   "scripts": {
+    "dev": "micro-dev handler.js",
+    "start": "node index.js",
     "lint": "xo .",
     "format": "xo . --fix"
   },
