@@ -1,7 +1,8 @@
 const querystring = require('querystring');
 const {json, sendError, createError} = require('micro');
 const db = require('./db');
-const checkAuth = require('./check-auth')
+const checkAuth = require('./check-auth');
+const cors = require('./cors');
 
 const defaultStart = () => {
   const d = new Date();
@@ -17,7 +18,7 @@ const processEnd = dateString => {
   return date.toISOString();
 };
 
-const handleGet = async (req) => {
+const handleGet = async req => {
   const {url} = req;
   const q = url.split('?');
   const {
@@ -44,27 +45,30 @@ const handleGet = async (req) => {
     values
   );
   return {events};
-}
+};
 
 const handlePost = async (req, res) => {
   try {
     const data = await json(req);
     const eventType = data.event_type;
     const date = new Date().toISOString();
-    db.run(
-      `INSERT INTO events (event_type, date) VALUES (?, ?)`,
-      [eventType, date]
-    );
+    db.run(`INSERT INTO events (event_type, date) VALUES (?, ?)`, [
+      eventType,
+      date
+    ]);
     return 'logged';
   } catch (error) {
     return 'noop';
   }
-}
+};
 
-module.exports = checkAuth(async (req, res) => {
-  switch(req.method) {
-    case 'GET': return handleGet(req, res);
-    case 'POST': return handlePost(req, res);
-    default: return sendError(req, res, createError(501, 'Not Implemented'));
+module.exports = cors(checkAuth(async (req, res) => {
+  switch (req.method) {
+    case 'GET':
+      return handleGet(req, res);
+    case 'POST':
+      return handlePost(req, res);
+    default:
+      return sendError(req, res, createError(501, 'Not Implemented'));
   }
-});
+}));
