@@ -5,6 +5,7 @@
     "format": "xo . --fix"
   },
   "devDependencies": {
+    "micro-dev": "^3.0.0",
     "xo": "latest"
   },
   "xo": {
@@ -12,5 +13,9 @@
     "space": true,
     "globals": []
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "micro": "^9.3.4",
+    "sqlite3": "^4.1.0"
+  }
 }
