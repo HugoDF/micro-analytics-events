@@ -2,15 +2,6 @@ const querystring = require('querystring');
 const {json} = require('micro');
 const db = require('./db');
 
-function select(sql, values) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, values, (err, rows) => {
-      if (err) return reject(err);
-      return resolve(rows);
-    });
-  });
-}
-
 const defaultStart = () => {
   const d = new Date();
   d.setDate(d.getDate() - 1);
@@ -44,7 +35,7 @@ module.exports = async req => {
       eventTypeClause = `AND event_type = $event_type`;
     }
 
-    const events = await select(
+    const events = await db.select(
       `SELECT event_type, date
        FROM events
         WHERE datetime(date) >= datetime($start)
