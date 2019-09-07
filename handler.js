@@ -17,9 +17,12 @@ const defaultStart = () => {
   return d.toISOString();
 };
 
-const defaultEnd = () => {
-  const d = new Date();
-  return d.toISOString();
+const defaultEnd = () => new Date().toISOString();
+
+const processEnd = dateString => {
+  const date = new Date(dateString);
+  date.setHours(23, 59, 59, 999);
+  return date.toISOString();
 };
 
 module.exports = async req => {
@@ -33,16 +36,20 @@ module.exports = async req => {
     } = querystring.parse(q.length > 0 ? q[1] : '');
     const values = {
       $start: new Date(start).toISOString(),
-      $end: new Date(end).toISOString()
+      $end: processEnd(end)
     };
     let eventTypeClause = '';
     if (event_type) {
       values.$event_type = event_type;
-      eventTypeClause = `AND event_type = $event_type;`;
+      eventTypeClause = `AND event_type = $event_type`;
     }
 
     const events = await select(
-      `SELECT event_type, date FROM events WHERE date >= $start AND date <= $end ${eventTypeClause}`,
+      `SELECT event_type, date
+       FROM events
+        WHERE datetime(date) >= datetime($start)
+          AND datetime(date) <= datetime($end)
+          ${eventTypeClause}`,
       values
     );
     return {events};
