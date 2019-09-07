@@ -51,10 +51,12 @@ module.exports = async req => {
     const eventType = data.event_type;
     const date = new Date().toISOString();
     db.run(
-      `INSERT INTO events (event_type, date) VALUES (?, ?)`[(eventType, date)]
+      `INSERT INTO events (event_type, date) VALUES (?, ?)`,
+      [eventType, date]
     );
     return 'logged';
   } catch (error) {
+    console.error(error.stack);
     return 'noop';
   }
 };
