@@ -2,19 +2,19 @@ const {sendError, createError} = require('micro');
 
 const {API_SECRET} = process.env;
 
-const checkAuth = fn => (req, res) => {
+const checkAuth = (fn) => (request, response) => {
   if (!API_SECRET) {
-    return fn(req, res);
+    return fn(request, response);
   }
 
   if (
-    req.headers.authorization &&
-    req.headers.authorization.endsWith(API_SECRET)
+    request.headers.authorization &&
+    request.headers.authorization.endsWith(API_SECRET)
   ) {
-    return fn(req, res);
+    return fn(request, response);
   }
 
-  return sendError(req, res, createError(401, 'Unauthorized'));
+  return sendError(request, response, createError(401, 'Unauthorized'));
 };
 
 module.exports = checkAuth;
