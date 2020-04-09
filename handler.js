@@ -12,14 +12,14 @@ const defaultStart = () => {
 
 const defaultEnd = () => new Date().toISOString();
 
-const processEnd = dateString => {
+const processEnd = (dateString) => {
   const date = new Date(dateString);
   date.setHours(23, 59, 59, 999);
   return date.toISOString();
 };
 
-const handleGet = async req => {
-  const {url} = req;
+const handleGet = async (request) => {
+  const {url} = request;
   const q = url.split('?');
   const {
     start = defaultStart(),
@@ -47,9 +47,9 @@ const handleGet = async req => {
   return {events};
 };
 
-const handlePost = async req => {
+const handlePost = async (request) => {
   try {
-    const data = await json(req);
+    const data = await json(request);
     const eventType = data.event_type;
     const date = new Date().toISOString();
     db.run(`INSERT INTO events (event_type, date) VALUES (?, ?)`, [
@@ -57,29 +57,33 @@ const handlePost = async req => {
       date
     ]);
     return 'logged';
-  } catch (error) {
+  } catch (_) {
     return 'noop';
   }
 };
 
-const health = fn => (req, res) => {
-  if (req.url === '/health') {
+const health = (fn) => (request, response) => {
+  if (request.url === '/health') {
     return 'OK';
   }
 
-  return fn(req, res);
+  return fn(request, response);
 };
 
 module.exports = health(
   cors(
-    checkAuth(async (req, res) => {
-      switch (req.method) {
+    checkAuth(async (request, response) => {
+      switch (request.method) {
         case 'GET':
-          return handleGet(req, res);
+          return handleGet(request, response);
         case 'POST':
-          return handlePost(req, res);
+          return handlePost(request, response);
         default:
-          return sendError(req, res, createError(501, 'Not Implemented'));
+          return sendError(
+            request,
+            response,
+            createError(501, 'Not Implemented')
+          );
       }
     })
   )
