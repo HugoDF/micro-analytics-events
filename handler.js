@@ -57,7 +57,7 @@ const handlePost = async (request) => {
       date
     ]);
     return 'logged';
-  } catch (_) {
+  } catch {
     return 'noop';
   }
 };
