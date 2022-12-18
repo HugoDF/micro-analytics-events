@@ -23,6 +23,6 @@
   "license": "MIT",
   "dependencies": {
     "micro": "^9.4.1",
-    "sqlite3": "^5.1.2"
+    "sqlite3": "^5.1.4"
   }
 }
